@@ -1,45 +1,19 @@
 const express = require("express");
 const axios = require("axios");
 const xml2js = require("xml2js");
-const fs = require("fs");
 const cors = require("cors");
-//import fetch from "node-fetch";
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
+const corsOptions = {
+  origin: "*",
+  allowedHeaders: ["Content-Type", "Accept", "x-client-id", "x-app-id"],
+};
 app.use(cors());
 app.use(express.json());
 
-app.get("/proxy", async (req, res) => {
-  const { lat, lon, radius } = req.query;
-
-  //const apiUrl = `https://odre.opendatasoft.com/explore/dataset/bornes-irve/api/?disjunctive.region&disjunctive.departement&geofilter.distance=${lat},${lon},${radius}`;
-  const point = "POINT(" + lat + " " + lon + ")";
-  const apiUrl =
-    "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records?limit=1&where=(distance(`geo_point_borne`, geom'" +
-    point +
-    "', " +
-    radius +
-    "m))";
-
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    // console.log(response);
-    // console.log(data);
-    res.json(data);
-  } catch (error) {
-    console.error(
-      "Erreur lors de la récupération des bornes électriques :",
-      error
-    );
-    res
-      .status(500)
-      .send("Erreur lors de la récupération des bornes électriques");
-  }
-});
-
+// POST : Enveloppe SOAP + réponse
 app.post("/soap-proxy", async (req, res) => {
   const { distance, autonomie, vitesse_moyenne, tps_chargement } = req.body;
 
@@ -81,6 +55,83 @@ app.post("/soap-proxy", async (req, res) => {
   } catch (error) {
     console.error("Erreur lors de la requête SOAP :", error);
     res.status(500).send("Erreur lors de la requête SOAP");
+  }
+});
+
+// GET : API GraphQL pour les véhicules
+app.get("/vehicle-list", async (req, res) => {
+  const apiUrl = "https://api.chargetrip.io/graphql";
+  const response = await axios.post(
+    apiUrl,
+    {
+      query: `query vehicleList {
+      vehicleList(
+        page: 0, 
+        size: 20
+      ) {
+        id
+        naming {
+          make
+          model
+          chargetrip_version
+        }
+        media {
+          image {
+            thumbnail_url
+          }
+        }
+        battery {
+          usable_kwh
+        }
+        range {
+          chargetrip_range {
+            best
+            worst
+          }
+        }
+      }
+    }`,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "x-client-id": process.env.REACT_APP_CHARGETRIP_CLIENT_ID,
+        "x-app-id": process.env.REACT_APP_CHARGETRIP_APP_ID,
+      },
+    }
+  );
+  const data = response.data;
+  res.json(data.data.vehicleList);
+});
+
+// GET : Récupère les bornes près d'un point (NON UTILISEE)
+app.get("/proxy", async (req, res) => {
+  const { lat, lon, radius } = req.query;
+
+  //const apiUrl = `https://odre.opendatasoft.com/explore/dataset/bornes-irve/api/?disjunctive.region&disjunctive.departement&geofilter.distance=${lat},${lon},${radius}`;
+  const point = "POINT(" + lat + " " + lon + ")";
+  const apiUrl =
+    "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records?limit=1&where=(distance(`geo_point_borne`, geom'" +
+    point +
+    "', " +
+    radius +
+    "m))";
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    // console.log(response);
+    // console.log(data);
+    res.json(data);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des bornes électriques :",
+      error
+    );
+    res
+      .status(500)
+      .send("Erreur lors de la récupération des bornes électriques");
   }
 });
 
