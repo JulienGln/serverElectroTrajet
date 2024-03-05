@@ -1,0 +1,12 @@
+{
+  "name": "serverelectrotrajet",
+  "version": "1.0.0",
+  "description": "Serveur de l'application electro trajet",
+  "main": "serveur.js",
+  "scripts": {
+    "start": "node serveur.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Julien GALERNE",
+  "license": "ISC"
+}
