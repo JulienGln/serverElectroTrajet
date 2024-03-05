@@ -32,9 +32,13 @@ app.post("/soap-proxy", async (req, res) => {
     </soapenv:Envelope>`;
 
   try {
-    const response = await axios.post("http://127.0.0.1:8000/", soapRequest, {
-      headers: { "Content-Type": "text/xml" },
-    });
+    const response = await axios.post(
+      "https://soap-electro-trajet.vercel.app/",
+      soapRequest,
+      {
+        headers: { "Content-Type": "text/xml" },
+      }
+    );
 
     xml2js
       .parseStringPromise(response.data)
