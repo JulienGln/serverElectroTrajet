@@ -15,6 +15,11 @@ const corsOptions = {
 app.use(cors());
 app.use(express.json());
 
+// GET : Redirection vers l'application react
+app.get("/", (req, res) => {
+  res.redirect("https://orange-island-082d39903.4.azurestaticapps.net");
+});
+
 // POST : Enveloppe SOAP + réponse
 app.post("/soap-proxy", async (req, res) => {
   const { distance, autonomie, vitesse_moyenne, tps_chargement } = req.body;
