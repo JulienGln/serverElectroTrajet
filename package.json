@@ -13,6 +13,8 @@
     "axios": "^1.6.7",
     "cors": "^2.8.5",
     "express": "^4.18.3",
+    "graphql-request": "^6.1.0",
+    "graphql-tag": "^2.12.6",
     "xml2js": "^0.6.2"
   }
 }
