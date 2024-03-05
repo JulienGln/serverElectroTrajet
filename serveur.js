@@ -107,53 +107,6 @@ app.get("/vehicle-list", async (req, res) => {
     console.error(`Error: ${error}`);
     res.status(500).send("An error occurred while fetching the vehicle list.");
   }
-
-  // const apiUrl = "https://api.chargetrip.io/graphql";
-  // const response = await axios.post(
-  //   apiUrl,
-  //   {
-  //     query: `query vehicleList {
-  //     vehicleList(
-  //       page: 0,
-  //       size: 20
-  //     ) {
-  //       id
-  //       naming {
-  //         make
-  //         model
-  //         chargetrip_version
-  //       }
-  //       media {
-  //         image {
-  //           thumbnail_url
-  //         }
-  //       }
-  //       battery {
-  //         usable_kwh
-  //       }
-  //       range {
-  //         chargetrip_range {
-  //           best
-  //           worst
-  //         }
-  //       }
-  //     }
-  //   }`,
-  //   },
-  //   {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Accept: "application/json",
-  //       "x-client-id":
-  //         process.env.REACT_APP_CHARGETRIP_CLIENT_ID ||
-  //         "5ed1175bad06853b3aa1e492",
-  //       "x-app-id":
-  //         process.env.REACT_APP_CHARGETRIP_APP_ID || "623998b2c35130073829b2d2",
-  //     },
-  //   }
-  // );
-  // const data = response.data;
-  // res.json(data.data.vehicleList);
 });
 
 // GET : Récupère les bornes près d'un point (NON UTILISEE)
