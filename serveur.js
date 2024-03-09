@@ -4,6 +4,7 @@ const xml2js = require("xml2js");
 const cors = require("cors");
 const { request } = require("graphql-request");
 const gql = require("graphql-tag").gql;
+require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -103,11 +104,8 @@ app.get("/vehicle-list", async (req, res) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
-      "x-client-id":
-        process.env.REACT_APP_CHARGETRIP_CLIENT_ID ||
-        "65aa81e90117350bae37ad07",
-      "x-app-id":
-        process.env.REACT_APP_CHARGETRIP_APP_ID || "65aa81e90117350bae37ad09",
+      "x-client-id": process.env.REACT_APP_CHARGETRIP_CLIENT_ID,
+      "x-app-id": process.env.REACT_APP_CHARGETRIP_APP_ID,
     };
 
     const data = await request(apiUrl, query, {}, headers);
