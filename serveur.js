@@ -4,7 +4,7 @@ const xml2js = require("xml2js");
 const cors = require("cors");
 const { request } = require("graphql-request");
 const gql = require("graphql-tag").gql;
-require("dotenv").config();
+//require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3001;
